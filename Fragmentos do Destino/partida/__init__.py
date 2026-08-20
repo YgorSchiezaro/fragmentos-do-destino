@@ -1,0 +1,2 @@
+from .partida import Partida
+
