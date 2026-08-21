@@ -1,35 +1,51 @@
 from jogador import Jogador
+from entrada import ler_inteiro
+
 
 class Combate:
-    def __init__(self, jog, jogadores, indice):
+    def __init__(self, jog: Jogador, jogadores: list[Jogador]):
+        if jog not in jogadores:
+            raise ValueError("O jogador atacante não está na partida.")
+
         self.jog: Jogador = jog
         self.jogadores = jogadores
-        self.indice = indice # indice do jogador atual
-        self.qj = len(self.jogadores)
-        self.ialvo: Jogador = None #jogador que será atacado
+        self.ialvo: Jogador | None = None
 
-    def escolher_alvo(self):
-        if self.qj > 2:
-            for i in range(self.qj):
-                if i != self.indice:
-                     print(f" - [{i}] {self.jogadores[i].nome}")
-            ialvo = int(input("Escolha quem você quer atacar: "))
+    def escolher_alvo(self) -> Jogador:
+        alvos = {
+            indice: jogador
+            for indice, jogador in enumerate(self.jogadores)
+            if jogador is not self.jog
+        }
 
+        if not alvos:
+            raise ValueError("Não há outro jogador disponível para atacar.")
+
+        if len(alvos) == 1:
+            self.ialvo = next(iter(alvos.values()))
         else:
-            for i in range(self.qj):
-                if i != self.indice:
-                    ialvo = i
-        self.ialvo = self.jogadores[ialvo]
-        print(f"{self.jog.nome } atacou o {self.ialvo.nome}")
+            print("Escolha o alvo:")
+            for indice, jogador in alvos.items():
+                print(f" - [{indice}] {jogador.nome}")
 
-    def atacar(self):
-        self.escolher_alvo()
+            indice_alvo = ler_inteiro(
+                "Escolha quem você quer atacar: ",
+                opcoes=set(alvos),
+            )
+            self.ialvo = alvos[indice_alvo]
+
+        print(f"{self.jog.nome} atacou {self.ialvo.nome}")
+        return self.ialvo
+
+    def atacar(self) -> int:
+        alvo = self.escolher_alvo()
         dado20 = self.jog.dado20()
         if dado20 > 10:
             dado10 = self.jog.dado10()
             danotot = self.jog.danototal(dado10, dado20)
-            self.ialvo.vida -= danotot
-            print(f"{self.ialvo.nome} perdeu {danotot} de HP ")
-        else:
-            print("Errou o dano!!")
+            alvo.vida -= danotot
+            print(f"{alvo.nome} perdeu {danotot} de HP")
+            return danotot
 
+        print("O ataque errou!")
+        return 0

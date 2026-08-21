@@ -1,22 +1,25 @@
 from random import randint
 from time import sleep
 from equipamento import Equipamento
+from entrada import ler_inteiro
+
 
 class Jogador:
     def __init__(self, nome, vida):
         self.nome = nome
         self.vida = vida
         self.danobonus = 0
-        self.agilidadebonus=  0
+        self.agilidadebonus = 0
         self.inventario = []
+        self.moedas = 0
 
-        self.armas: Equipamento = None
-        self.anel = None
+        self.armas: Equipamento | None = None
+        self.anel: Equipamento | None = None
 
     def dado20(self):
         print("ROLANDO DADO DE AGILIDADE")
         sleep(0.5)
-        dado20 = randint(10, 20)
+        dado20 = randint(1, 20)
         print(dado20)
         return dado20
 
@@ -44,7 +47,7 @@ class Jogador:
 
 
     def adicionar_item_inventario(self, item):
-        print(f"- {item.nome} foi adicionado no inventário")
+        print(f"\n- {item.nome} foi adicionado no inventário")
         self.inventario.append(item)
 
     def mostrar_inventario(self):
@@ -52,9 +55,8 @@ class Jogador:
         if not self.inventario:
             print("Inventario vazio")
             return
-        opc = 0
         fim = len(self.inventario)
-        while opc != fim:
+        while True:
             for i, item in enumerate(self.inventario):
                 print(f"- [{i}] {item.nome} - Dano: {item.dano} - Agilidade: {item.agilidade} - Tipo: {item.tipo}")
             print(f" - [{fim}] Saída")
@@ -63,11 +65,13 @@ class Jogador:
                 print(f"Arma Equipada: {self.armas.nome}")
             if self.anel:
                 print(f"Anel Equipado: {self.anel.nome}")
-            opc = int (input("> "))
-            if opc == fim or opc == "fim":
+            opc = ler_inteiro("> ", minimo=0, maximo=fim)
+            if opc == fim:
                 return
-            if self.inventario[opc].tipo == 'arma' or self.inventario[opc].tipo == 'anel':
-                self.equipar(self.inventario[opc])
+
+            item = self.inventario[opc]
+            if item.tipo in {"arma", "anel"}:
+                self.equipar(item)
 
 
     def equipar(self, item):
@@ -80,6 +84,26 @@ class Jogador:
             self.armas = item
         elif item.tipo == 'anel':
             if self.anel:
-                print(f"Desequipando {item.nome}")
+                print(f"Desequipando {self.anel.nome}")
             self.anel = item
         print(f"{self.nome} equipou {item.nome}")
+
+    def adicionar_moedas(self, quantidade):
+        if quantidade <= 0:
+            print("Você esta pobre. A quantidade de moedas deve ser positiva.")
+            return
+        self.moedas += quantidade
+        print(f"{self.nome} recebeu {quantidade} de moedas.")
+        print(f"Saldo atual: {self.moedas}")
+
+    def gastar_moedas(self, quantidade):
+        if quantidade <= 0:
+            print("Valor de compra inválido.")
+            return False
+        if self.moedas < quantidade:
+            print(f"{self.nome} não possui moedas suficientes. Vai jogar para tentar ter dinheiro!!")
+            return False
+        self.moedas -= quantidade
+        print(f"Compra realizada. Saldo Atual: {self.moedas} moedas.")
+        return True
+
