@@ -24,7 +24,7 @@ class Combate:
         if len(alvos) == 1:
             self.ialvo = next(iter(alvos.values()))
         else:
-            print("Escolha o alvo:")
+            print("Escolha o alvo:e")
             for indice, jogador in alvos.items():
                 print(f" - [{indice}] {jogador.nome}")
 
@@ -42,7 +42,8 @@ class Combate:
         dado20 = self.jog.dado20()
         if dado20 > 10:
             dado10 = self.jog.dado10()
-            danotot = self.jog.danototal(dado10, dado20)
+            dado_sorte = self.jog.dado_sorte()
+            danotot = self.jog.danototal(dado10, dado20, dado_sorte)
             alvo.vida -= danotot
             print(f"{alvo.nome} perdeu {danotot} de HP")
             return danotot

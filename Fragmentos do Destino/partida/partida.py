@@ -53,8 +53,6 @@ class Partida:
             return True
 
         if len(self.jogadores) == 1:
-            campeao = self.jogadores[0]
-            print(f"{campeao.nome} venceu a partida")
             return True
 
         return False

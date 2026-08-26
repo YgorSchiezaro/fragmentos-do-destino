@@ -12,6 +12,7 @@ class Jogador:
         self.agilidadebonus = 0
         self.inventario = []
         self.moedas = 0
+        self.vida_maxima = vida
 
         self.armas: Equipamento | None = None
         self.anel: Equipamento | None = None
@@ -30,21 +31,33 @@ class Jogador:
         print(dado10)
         return dado10
 
-    def danototal(self, dado10, dado20):
+    def dado_sorte(self):
+        print("ROLANDO DADO DA SORTE")
+        sleep(0.5)
+
+        sorte = randint(1, 10)
+        print(f"Resultado do seu dado da sorte: {sorte}")
+        return sorte
+
+
+    def danototal(self, dado10, dado20, dado_sorte):
         danotot = dado10
         if self.danobonus > 0:
-            print(f" + {self.danobonus} de bônus")
             danotot += self.danobonus
+
         if self.armas and self.armas.dano > 0:
             danotot += self.armas.dano
             print(f" + {self.armas.dano} de armas")
 
-        if dado20 >= 20:
+        if dado20 >= 20 or dado_sorte == 10:
             print("GANHOU UM BÔNUS. ESPECIAL ATIVADO!!!")
             sleep(0.3)
             danotot *= 2
         return danotot
 
+    def restaurar_vidas(self):
+        self.vida = self.vida_maxima
+        print(f"❤️ A vida de {self.nome} foi restaurada para {self.vida}.")
 
     def adicionar_item_inventario(self, item):
         print(f"\n- {item.nome} foi adicionado no inventário")
