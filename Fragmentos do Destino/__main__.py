@@ -19,7 +19,7 @@ def criar_loja() -> Loja:
         Equipamento("Espada de Pedra", 5, 8, 0, "arma"),
         Equipamento("Espada de Ferro", 10, 12, 0, "arma"),
         Equipamento("Anel Mágico", 1, 5, 4, "anel"),
-        Equipamento("Anel da agilidade", 1, 7, 50, "anel"),
+        Equipamento("Anel da agilidade", 0, 7, 6, "anel"),
     ]
 
     for equipamento in equipamentos:
@@ -71,7 +71,7 @@ def main() -> None:
 
     todos_jogadores = Partida.registrar_jogadores(
         quantjogador=quantjogador,
-        vida=100,
+        vida=100
     )
 
     loja = criar_loja()

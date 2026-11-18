@@ -1,5 +1,4 @@
 from random import randint
-from time import sleep
 from equipamento import Equipamento
 from entrada import ler_inteiro
 
@@ -18,27 +17,19 @@ class Jogador:
         self.anel: Equipamento | None = None
 
     def dado20(self):
-        print("ROLANDO DADO DE AGILIDADE")
-        sleep(0.5)
-        dado20 = randint(1, 20)
-        print(dado20)
-        return dado20
+        return randint(1, 20)
 
     def dado10(self):
-        print("ROLANDO DADO DE ATAQUE")
-        sleep(0.5)
-        dado10 = randint(1, 10)
-        print(dado10)
-        return dado10
+        return randint(1, 10)
 
     def dado_sorte(self):
-        print("ROLANDO DADO DA SORTE")
-        sleep(0.5)
+        return randint(1, 10)
 
-        sorte = randint(1, 10)
-        print(f"Resultado do seu dado da sorte: {sorte}")
-        return sorte
-
+    def bonus_agilidade(self) -> int:
+        bonus = self.agilidadebonus
+        if self.anel:
+            bonus += self.anel.agilidade
+        return bonus
 
     def danototal(self, dado10, dado20, dado_sorte):
         danotot = dado10
@@ -47,11 +38,11 @@ class Jogador:
 
         if self.armas and self.armas.dano > 0:
             danotot += self.armas.dano
-            print(f" + {self.armas.dano} de armas")
+            
+        if self.anel and self.anel.dano > 0:
+            danotot += self.anel.dano
 
         if dado20 >= 20 or dado_sorte == 10:
-            print("GANHOU UM BÔNUS. ESPECIAL ATIVADO!!!")
-            sleep(0.3)
             danotot *= 2
         return danotot
 

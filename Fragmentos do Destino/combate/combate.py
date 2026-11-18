@@ -34,19 +34,40 @@ class Combate:
             )
             self.ialvo = alvos[indice_alvo]
 
-        print(f"{self.jog.nome} atacou {self.ialvo.nome}")
         return self.ialvo
 
     def atacar(self) -> int:
         alvo = self.escolher_alvo()
-        dado20 = self.jog.dado20()
-        if dado20 > 10:
-            dado10 = self.jog.dado10()
-            dado_sorte = self.jog.dado_sorte()
-            danotot = self.jog.danototal(dado10, dado20, dado_sorte)
-            alvo.vida -= danotot
-            print(f"{alvo.nome} perdeu {danotot} de HP")
-            return danotot
+        print(f"\n{self.jog.nome} atacou {alvo.nome}!")
+        print("ROLANDO DADO DE AGILIDADE")
+        dado20_base = self.jog.dado20()
+        bonus_agilidade = self.jog.bonus_agilidade()
+        dado20 = dado20_base + bonus_agilidade
+        print(f"Resultado do dado : {dado20_base}")
 
-        print("O ataque errou!")
-        return 0
+        if bonus_agilidade > 0:
+            print(f"Bônus de agilidade: +{bonus_agilidade}")
+
+        print(f"Agilidade total: {dado20}")
+        
+        if dado20 <= 10:
+            print("O ataque errou!")
+            return 0
+
+        print("ROLANDO DADO DE ATAQUE")
+        dado10 = self.jog.dado10()
+        print(f"Resultado: {dado10}")
+
+        print('ROLANDO DADO DA SORTE')
+        dado_sorte = self.jog.dado_sorte()
+        print(f"Resultado: {dado_sorte}")
+
+        dano_total = self.jog.danototal(dado10, dado20, dado_sorte)
+
+        if dado20 >= 20 or dado_sorte == 10:
+            print('GANHOU UM BÔNUS, ESPECIAL ATIVADO!!!')
+
+        alvo.vida -= dano_total
+
+        print(f'{alvo.nome} perdeu {dano_total} de HP!')
+        return dano_total
